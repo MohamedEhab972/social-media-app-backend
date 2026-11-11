@@ -1,0 +1,41 @@
+{
+  "name": "socialmediaapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "cross-env NODE_ENV=development  concurrently \"tsc -watch\" \"node --watch ./dist/main.js\"",
+    "start:prod": "cross-env NODE_ENV=production  concurrently \"tsc -watch\" \"node --watch ./dist/main.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.2.0",
+    "@types/nodemailer": "^8.0.1",
+    "concurrently": "^10.0.4",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1118.0",
+    "@aws-sdk/lib-storage": "^3.1127.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.3",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.5",
+    "zod": "^4.4.3"
+  }
+}

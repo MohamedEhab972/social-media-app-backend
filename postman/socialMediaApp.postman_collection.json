@@ -1,0 +1,145 @@
+{
+  "info": {
+    "_postman_id": "b3f2a6d0-4e9a-4b2a-9c1e-socialmediaapp",
+    "name": "Social Media App",
+    "description": "Auto-generated collection covering all routes currently defined in the Express app (src/app.controller.ts, src/models/auth/auth.controller.ts).\n\nBase URL is controlled by the `baseUrl` collection variable (default http://localhost:3000, matching the PORT fallback in src/config/env.service.ts).\n\nThe Login request has a test script that automatically stores the returned JWT into the `authToken` collection variable, which the protected requests use as a Bearer token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "authToken", "value": "", "type": "string" },
+    { "key": "userId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Root",
+      "item": [
+        {
+          "name": "Health Check (Hello World)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Auth Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/", "host": ["{{baseUrl}}"], "path": ["auth", ""] }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"johndoe\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"phone\": \"01000000000\",\n  \"password\": \"P@ssw0rd123\",\n  \"gender\": 0\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "description": "Required: userName, email, phone, password.\nOptional: firstName, lastName, gender (GenderEnum: 0=Male, 1=Female).\nFails with 409 if email or phone already registered."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const json = pm.response.json();",
+                  "    const token = json?.data?.token;",
+                  "    const userId = json?.data?._id;",
+                  "    if (token) {",
+                  "        pm.collectionVariables.set('authToken', token);",
+                  "    }",
+                  "    if (userId) {",
+                  "        pm.collectionVariables.set('userId', userId);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"P@ssw0rd123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "description": "Required: email, password. On success, saves the returned JWT into the `authToken` collection variable for use by protected requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/users", "host": ["{{baseUrl}}"], "path": ["auth", "users"] },
+            "description": "Requires Bearer token (any authenticated user)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By ID (Admin only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", "{{userId}}"]
+            },
+            "description": "Requires Bearer token AND role = admin (checkRole([\"admin\"])). Path param :id is the Mongo user id."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By Filter",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/:filter",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", ":filter"],
+              "variable": [{ "key": "filter", "value": "" }]
+            },
+            "description": "Requires Bearer token. NOTE: this route is registered after GET /auth/users/:id, so Express matches /auth/users/:id first for any single path segment — this route is effectively unreachable as written in auth.controller.ts. Kept here for completeness."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
