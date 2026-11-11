@@ -8,7 +8,10 @@ import {
   NotFoundException,
 } from "../../common/exceptions/error.exceptions.js";
 
-const USER_FIELDS = "firstName lastName email profileImage";
+// public profile only - used for pending requests (no email)
+const USER_FIELDS = "firstName lastName profileImage";
+// friends (accepted friendships) can also see each other's email
+const FRIEND_FIELDS = "firstName lastName email profileImage";
 
 class FriendService {
   private betweenUsers(a: string, b: string) {
@@ -124,7 +127,7 @@ class FriendService {
   async getFriends(userId: string) {
     const user = await UserModel.findById(userId)
       .select("friends")
-      .populate("friends", USER_FIELDS);
+      .populate("friends", FRIEND_FIELDS);
     if (!user) {
       throw new NotFoundException("User not found");
     }
