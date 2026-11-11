@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema<IUser>(
       enum: RoleEnum,
       default: RoleEnum.User,
     },
+    friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
@@ -58,6 +59,13 @@ userSchema
   .get(function () {
     return `${this.firstName} ${this.lastName}`;
   });
+
+// Mongoose middleware: normalize email before every save
+userSchema.pre("save", function () {
+  if (this.isModified("email")) {
+    this.email = this.email.trim().toLowerCase();
+  }
+});
 
 const UserModel = mongoose.model<IUser>("User", userSchema);
 

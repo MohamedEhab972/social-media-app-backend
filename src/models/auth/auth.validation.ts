@@ -4,7 +4,7 @@ import { GenderEnum } from "../../common/indexs.js";
 export const signUpSchema = {
   body: z
     .strictObject({
-      email: z.email(),
+      email: z.email().toLowerCase(),
       password: z
         .string()
         .min(6, { error: "Password must be at least 6 characters long" })
@@ -38,7 +38,7 @@ export const signUpSchema = {
 
 export const loginSchema = {
   body: z.strictObject({
-    email: z.email(),
+    email: z.email().toLowerCase(),
     password: z
       .string()
       .min(6, { error: "Password must be at least 6 characters long" })

@@ -1,6 +1,8 @@
 import express from "express";
 import type { Express, NextFunction, Request, Response } from "express";
 import authRouter from "./models/auth/auth.controller.js";
+import postRouter from "./models/post/post.controller.js";
+import friendRouter from "./models/friend/friend.controller.js";
 import cors from "cors";
 import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
@@ -24,7 +26,7 @@ export const bootstrap = () => {
   app.use(
     cors({
       origin: env.CORS_ORIGIN ?? false,
-      methods: "GET,POST,PUT,DELETE",
+      methods: "GET,POST,PUT,PATCH,DELETE",
       allowedHeaders:
         "Content-Type,Authorization,X-Requested-With,X-HTTP-Method-Override",
     }),
@@ -32,6 +34,8 @@ export const bootstrap = () => {
   app.use(limiter);
   connectDB();
   app.use("/auth", authRouter);
+  app.use("/post", postRouter);
+  app.use("/friend", friendRouter);
 
   app.get("/", (req: Request, res: Response) => {
     res.send("Hello World!");

@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import type { GenderEnum, ProviderEnum, RoleEnum } from "../indexs.js";
 
 export interface IUser {
@@ -12,4 +13,5 @@ export interface IUser {
   provider?: ProviderEnum;
   role?: RoleEnum;
   profileImage?: string[];
+  friends?: Types.ObjectId[];
 }
